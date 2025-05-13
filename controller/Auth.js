@@ -89,6 +89,11 @@ exports.login = async (req, res) => {
     //user.token = token;
     //user.password = undefined; // Remove the password from the user object before sending it to the client
 
+    const UserObject = existingUser[0].toObject(); // Convert Mongoose document to plain object
+    UserObject.token = token; // Add the token to the user object 
+    UserObject.password=undefined; // Remove the password from the user object before sending it to the client
+
+    
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS
@@ -97,12 +102,7 @@ exports.login = async (req, res) => {
       success: true,
       message: 'Login successful',
       token, // Send the token to the client
-      user: {
-        id: existingUser[0]._id,
-        name: existingUser[0].name,
-        email: existingUser[0].email,
-        role: existingUser[0].role
-      }
+      user : UserObject
     }); 
 
   }
